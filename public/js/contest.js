@@ -1,0 +1,325 @@
+(function ($, window, document) {
+    if ($('#startContest').length > 0) {
+        $('#startContest').on("click", function (e) {
+            e.preventDefault();
+
+            $('#startContest').html("STARTING CONTEST...");
+            playContestStart();
+
+            $.ajax({
+                type: 'POST',
+                url: "/contest/start",
+                data: {
+                    categoryId: $('#categoryId').val(),
+                    userId: 10
+                }, beforeSend: function () {
+                },
+                complete: function (response) {
+                },
+                success: function (response) {
+                    response = JSON.parse(response)
+                    console.log(response.data)
+                    localStorage.setItem("kbcContestID", response.data.contestId);
+                    setTimeout(function () {
+                        window.location.href = "/contest";
+                    }, 6000);
+                },
+                error: function (data) {
+                    alert("Something went wrong, Please try again later");
+                }
+            });
+        });
+    }
+
+    IS_FIRST_QUESTION = false;
+
+    // LOAD FIRST QUESTION
+    var contestID = window.localStorage.getItem("kbcContestID");
+    var nextQInfo = window.localStorage.getItem("NEXTQUESTION");
+    var currQuesWorth = window.localStorage.getItem("CURRQUESWORTH");
+
+    if (contestID > 0) {
+        disableBtn('next');
+
+        if (nextQInfo === null) {
+            playQuestionStart();
+
+            iS_FIRST_QUESTON = true;
+            lastQDelivered = -1;
+
+            var answerObject = { QuestionId: lastQDelivered, AnswerKey: 1, IsWalkAway: false };
+            getNextQuestion(contestID, answerObject);
+        } else {
+            nextQInfo = JSON.parse(nextQInfo);
+            $("#questionStatement").html(nextQInfo.QuestionStatement);
+            $("#optionA").html(nextQInfo.OptionA);
+            $("#optionB").html(nextQInfo.OptionB);
+            $("#optionC").html(nextQInfo.OptionC);
+            $("#optionD").html(nextQInfo.OptionD);
+            $("#QLevel").html(nextQInfo.ContestLevel);
+
+            currQuesWorthInt = parseInt(currQuesWorth);
+            $("#CurrQuesAmount").html(Intl.NumberFormat('en-IN').format(currQuesWorthInt));
+
+            $('.rsl-tr').removeClass("active-tr");
+            $('#rsl-tr-' + parseInt(nextQInfo.ContestLevel)).addClass("active-tr");
+
+            $('.item').hide();
+            playQuestionStart();
+
+            if (nextQInfo.ContestLevel < 6) {
+                setTimeout(function () {
+                    $('.item').show();
+                    playClockSound();
+                    startCountdownTimer();
+                }, 5000);
+
+            } else {
+                $('.item').hide();
+            }
+        }
+    }
+
+    // HANDLE MANUAL NEXT QUESTION RELOAD
+    $("#next").on("click", function (e) {
+        doForcefulNext(false);
+    });
+
+    // HANDLE MANUAL NEXT QUESTION RELOAD
+    $("#walkaway").on("click", function (e) {
+        doForcefulWalkAway();
+    });
+
+    // GO HOME
+    $('#goHome').on('click', function (e) {
+        window.location.href = "/";
+    });
+
+
+    // Handling option clicks for answer purpose
+    $(".option-block").on("click", function (e) {
+        handleOptionClick(e, $(this));
+    });
+
+}(window.jQuery, window, document));
+
+function getNextQuestion(contestID, answerObject) {
+    $.ajax({
+        type: 'POST',
+        url: "/contest/deliverNextQuestion",
+        data: {
+            contestId: contestID,
+            answerObject: JSON.stringify(answerObject)
+        }, beforeSend: function () {
+        },
+        complete: function (response) {
+        },
+        success: function (response) {
+            response = JSON.parse(response)
+            response = response.data;
+
+            if (!response.ContestEnded) {
+                window.localStorage.setItem("NEXTQUESTION", JSON.stringify(response.NextQuestion));
+                window.localStorage.setItem("CONTESTINFO", JSON.stringify(response.Contest));
+                window.localStorage.setItem("PREVCORRECT", JSON.stringify(response.PrevCorrect));
+                window.localStorage.setItem("CONTESTENDED", JSON.stringify(response.ContestEnded));
+                window.localStorage.setItem("CURRQUESWORTH", JSON.stringify(response.CurrQuesWorth));
+
+                // question to be delivered
+                $("#questionStatement").html(response.NextQuestion.QuestionStatement);
+                $("#optionA").html(response.NextQuestion.OptionA);
+                $("#optionB").html(response.NextQuestion.OptionB);
+                $("#optionC").html(response.NextQuestion.OptionC);
+                $("#optionD").html(response.NextQuestion.OptionD);
+                $("#QLevel").html(response.NextQuestion.ContestLevel);
+
+                currQuesWorthInt = parseInt(response.CurrQuesWorth);
+                $("#CurrQuesAmount").html(Intl.NumberFormat('en-IN').format(currQuesWorthInt));
+
+                $('.rsl-tr').removeClass("active-tr");
+                $('#rsl-tr-' + parseInt(response.NextQuestion.ContestLevel)).addClass("active-tr");
+
+                $('.item').hide();
+                playQuestionStart();
+
+                if (response.NextQuestion.ContestLevel < 6) {
+                    setTimeout(function () {
+                        $('.item').show();
+                        playClockSound();
+                        startCountdownTimer();
+                    }, 5000);
+
+                } else {
+                    $('.item').hide();
+                }
+
+                $('.option-block').removeAttr("style");
+
+                enableBtn('walkaway');
+                disableBtn('next');
+            } else {
+                window.localStorage.setItem("CONTESTINFO", JSON.stringify(response.Contest));
+                window.localStorage.setItem("CONTESTENDED", JSON.stringify(response.ContestEnded));
+
+                window.onbeforeunload = function () { }
+                window.location.href = "/thanks";
+            }
+        },
+        error: function (data) {
+            alert("Something went wrong, Please try again later");
+        }
+    });
+}
+
+function doForcefulNext(isForceIncorrect = false) {
+    var contestID = window.localStorage.getItem("kbcContestID");
+    var nextQInfo = window.localStorage.getItem("NEXTQUESTION");
+    var contestEnded = window.localStorage.getItem("CONTESTENDED");
+    var prevUserResponse = window.localStorage.getItem("LOCAL_PREVUSER_RES");
+
+    if (contestEnded != null) {
+        contestEnded = JSON.parse(contestEnded);
+        if (contestEnded === true) {
+            alert("Contest ENDED.")
+        } else {
+            nextQInfo = JSON.parse(nextQInfo);
+            prevUserResponse = parseInt(prevUserResponse);
+
+            if (isForceIncorrect) {
+                prevUserResponse = 5;
+            }
+
+            var answerObject = { QuestionId: nextQInfo.Id, AnswerKey: prevUserResponse, IsWalkAway: false };
+            getNextQuestion(contestID, answerObject);
+        }
+    }
+}
+
+function doForcefulWalkAway() {
+    var contestID = window.localStorage.getItem("kbcContestID");
+    var nextQInfo = window.localStorage.getItem("NEXTQUESTION");
+    var contestEnded = window.localStorage.getItem("CONTESTENDED");
+
+    if (contestEnded != null) {
+        contestEnded = JSON.parse(contestEnded);
+        if (contestEnded === true) {
+            window.onbeforeunload = function () { }
+            window.location.href = '/thanks';
+        } else {
+            nextQInfo = JSON.parse(nextQInfo);
+            var answerObject = { QuestionId: nextQInfo.Id, AnswerKey: 1, IsWalkAway: true };
+            getNextQuestion(contestID, answerObject);
+        }
+    }
+}
+
+function handleOptionClick(event, that) {
+    var currQuestion = window.localStorage.getItem("NEXTQUESTION");
+    if (currQuestion == null) {
+        alert("SOMETHING WENT WRONG");
+    } else {
+        currQuestion = JSON.parse(currQuestion);
+        currChosenBlock = that.attr("opt-val");
+
+        if (currChosenBlock == currQuestion.CorrectOption) {
+            that.css("background", "green");
+            playCorrectAnswer();
+        } else {
+            that.css("background", "#be0027");
+            $("[opt-val='" + currQuestion.CorrectOption + "']").css("background", "green");
+            playIncorrectAnswer();
+
+        }
+
+        clearTimeout(TIMER_INSTANCE);
+        pauseClockSound();
+
+        window.localStorage.setItem("LOCAL_PREVUSER_RES", currChosenBlock);
+
+        enableBtn('next');
+        disableBtn('walkaway');
+    }
+}
+
+function playQuestionStart() {
+    stopAllSounds();
+    $('#kbcQuestionStartPlay')[0].play();
+}
+
+function playContestStart() {
+    stopAllSounds();
+    $('#kbcThemePlay')[0].play();
+}
+
+function playCorrectAnswer() {
+    stopAllSounds();
+    $('#correctAnswerPlay')[0].play();
+}
+
+function playIncorrectAnswer() {
+    stopAllSounds();
+    $('#wrongAnswerPlay')[0].play();
+}
+
+function playClockSound() {
+    pauseClockSound();
+    $('#kbcClockPlay')[0].play();
+}
+
+function pauseClockSound() {
+    $('#kbcClockPlay')[0].pause();
+}
+
+function stopAllSounds() {
+    var sounds = document.getElementsByTagName('audio');
+    for (i = 0; i < sounds.length; i++) sounds[i].pause();
+
+}
+
+function disableBtn(id) {
+    $('#' + id).prop("disabled", true);
+    $('#' + id).css("cursor", "not-allowed");
+}
+
+function enableBtn(id) {
+    $('#' + id).prop("disabled", false);
+    $('#' + id).css("cursor", "pointer");
+}
+
+var TIMER_INSTANCE;
+
+function startCountdownTimer() {
+    clearInterval(TIMER_INSTANCE);
+
+    var time = 30;
+    var initialOffset = '440';
+    var i = 1
+
+    $('.item h2').html(time);
+
+    /* Need initial run as interval hasn't yet occured... */
+    $('.circle_animation').css('stroke-dashoffset', (1 * (initialOffset / time)));
+
+    TIMER_INSTANCE = setInterval(function () {
+        $('h2').text(time - i);
+        if (i == time) {
+            playIncorrectAnswer();
+
+            clearInterval(TIMER_INSTANCE);
+
+            disableBtn('next');
+            disableBtn('walkaway');
+
+            setTimeout(function () {
+                pauseClockSound();
+                doForcefulNext(true);
+            }, 3000);
+
+            return;
+        }
+
+        $('.circle_animation').css('stroke-dashoffset', ((i + 1) * (initialOffset / time)));
+        i++;
+
+    }, 1000);
+}
