@@ -71,6 +71,16 @@
         </div>
 
         <div class="col-sm-6 center-viewport">
+            <div class="life-line-container">
+                <div id="fifty-fifty-lifeline" class="lifeline">
+                    50:50
+                </div>
+                &nbsp;&nbsp;
+                <div id="audience-poll-lifeline" class="lifeline">
+                    &#128202;
+                </div>
+            </div>
+
             <div class="row main-kbc-logo-container">
                 <div class="col-sm-12">
                     <div class="inner cover">
@@ -184,9 +194,35 @@
             <audio id="kbcQuestionStartPlay">
                 <source src="./public/sound/kbc_question_start.mp3" type="audio/mp3">
             </audio>
+            <audio id="kbcLifelinePlay">
+                <source src="./public/sound/kbc_lifeline.mp3" type="audio/mp3">
+            </audio>
         </div>
     </div>
 
+    <!-- Poll lifeline modal -->
+    <div class="modal fade" id="PollLifeLineModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">KBC Audience Poll Results</h4>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 </body>
 
@@ -194,7 +230,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="/public/js/contest.js"></script>
+
 
 <script>
     window.onbeforeunload = function (e) {

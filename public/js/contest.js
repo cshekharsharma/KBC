@@ -2,6 +2,7 @@
     if ($('#startContest').length > 0) {
         $('#startContest').on("click", function (e) {
             e.preventDefault();
+            disableBtn('startContest');
 
             $('#startContest').html("STARTING CONTEST...");
             playContestStart();
@@ -99,6 +100,47 @@
     // Handling option clicks for answer purpose
     $(".option-block").on("click", function (e) {
         handleOptionClick(e, $(this));
+    });
+
+    var FFLifeLineStatus = window.localStorage.getItem("FFLifeLineStatus");
+    var PollLifeLineStatus = window.localStorage.getItem("PollLifeLineStatus");
+
+    if (FFLifeLineStatus == "taken") {
+        $('#fifty-fifty-lifeline').addClass("UsedLifeline");
+        disableBtn('fifty-fifty-lifeline');
+    }
+
+    if (PollLifeLineStatus == "taken") {
+        $('#audience-poll-lifeline').addClass("UsedLifeline");
+        disableBtn('audience-poll-lifeline');
+    }
+
+    // Handling lifelines 
+    $('#fifty-fifty-lifeline').on('click', function (e) {
+        var FFLifeLineStatus = window.localStorage.getItem("FFLifeLineStatus");
+
+        if (FFLifeLineStatus != "taken") {
+            triggerFFLifeLine();
+
+            window.localStorage.setItem("FFLifeLineStatus", "taken");
+
+            $('#fifty-fifty-lifeline').addClass("UsedLifeline");
+            disableBtn('fifty-fifty-lifeline');
+        }
+    });
+
+    $('#audience-poll-lifeline').on('click', function (e) {
+        var FFLifeLineStatus = window.localStorage.getItem("PollLifeLineStatus");
+
+        if (FFLifeLineStatus != "taken") {
+
+            triggerPollLifeLine();
+
+            window.localStorage.setItem("PollLifeLineStatus", "taken");
+
+            $('#audience-poll-lifeline').addClass("UsedLifeline");
+            disableBtn('audience-poll-lifeline');
+        }
     });
 
 }(window.jQuery, window, document));
@@ -261,6 +303,11 @@ function playIncorrectAnswer() {
     $('#wrongAnswerPlay')[0].play();
 }
 
+function playLifelineSound() {
+    stopAllSounds();
+    $('#kbcLifelinePlay')[0].play();
+}
+
 function playClockSound() {
     pauseClockSound();
     $('#kbcClockPlay')[0].currentTime = 0;
@@ -277,7 +324,6 @@ function stopAllSounds() {
         sounds[i].pause();
         sounds[i].currentTime = 0;
     }
-
 }
 
 function disableBtn(id) {
@@ -331,4 +377,82 @@ function startCountdownTimer() {
         i++;
 
     }, 1000);
+}
+
+function triggerFFLifeLine() {
+    let currentQ = localStorage.getItem("NEXTQUESTION");
+
+    if (currentQ !== null) {
+        currentQ = JSON.parse(currentQ);
+
+        var correctOpt = parseInt(currentQ.CorrectOption);
+
+        origArr = [1, 2, 3, 4]
+        corrIdx = origArr.indexOf(correctOpt);
+        origArr.splice(corrIdx, 1);
+
+        randomOpt = origArr[Math.floor(Math.random() * origArr.length)];
+
+        $("[opt-val]").hide();
+
+        $("[opt-val='" + correctOpt + "']").show();
+        $("[opt-val='" + randomOpt + "']").show();
+
+        clearTimeout(TIMER_INSTANCE);
+        pauseClockSound();
+        playLifelineSound();
+    }
+}
+
+function triggerPollLifeLine() {
+    let currentQ = localStorage.getItem("NEXTQUESTION");
+
+    if (currentQ !== null) {
+        currentQ = JSON.parse(currentQ);
+
+        $("[opt-val]").show();
+        var correctOpt = parseInt(currentQ.CorrectOption);
+
+        var allOptions = [1, 2, 3, 4];
+        var percentNums = [
+            [64, 12, 8, 16],
+            [82, 4, 10, 4],
+            [49, 40, 6, 5],
+            [57, 21, 13, 9],
+            [71, 11, 9, 9]
+        ];
+
+        var currPercentNums = percentNums[Math.floor(Math.random() * percentNums.length)];
+        var correctAnsPercent = currPercentNums[0];
+
+        currPercentNums.splice(0, 1);
+
+        var bodyHtml = '';
+
+        for (i in allOptions) {
+            let randNum = 0;
+
+            if (allOptions[i] == correctOpt) {
+                randNum = correctAnsPercent;
+            } else {
+                tempRandIdx = Math.floor(Math.random() * currPercentNums.length);
+                randNum = currPercentNums[tempRandIdx];
+
+                currPercentNums.splice(tempRandIdx, 1);
+            }
+
+            var repeatableNum = Math.floor(randNum / 4);
+            bodyHtml += "Option " + String.fromCharCode(65 + parseInt(i)) + ": " +
+                "&#9608;".repeat(repeatableNum) + " " + randNum + "% <br>";
+        }
+
+        $('#PollLifeLineModal').modal();
+        $('#PollLifeLineModal .modal-body').html(bodyHtml);
+        $('#PollLifeLineModal .modal-body').css("text-align", "left");
+
+
+        clearTimeout(TIMER_INSTANCE);
+        pauseClockSound();
+        playLifelineSound();
+    }
 }

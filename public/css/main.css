@@ -33,7 +33,7 @@ body {
 }
 
 .main-kbc-logo-container {
-    margin-top: 100px;
+    margin-top: 50px;
     margin-bottom:50px;
 }
 
@@ -99,9 +99,6 @@ body {
     margin-top: 20px;
     width:80%;
     float:right;
-    background: rgb(2,0,36);
-    background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(89,33,171,1) 100%);
-
     background: rgb(2,0,36);
     background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(23,8,33,1) 31%);
     border-radius: 16px;
@@ -191,4 +188,40 @@ svg {
     border:1px solid #ffc107;
     background: #ffc107;
     color: #222 !important;
+}
+
+.lifeline {
+    background: #0F0522;
+    color: #FFF;
+    border:3px solid #999;
+    height:40px;
+    width:80px;
+    padding:5px;
+    font-family:verdana;
+    font-weight:bold;
+    border-radius:28px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.lifeline:hover {
+    background:#005670;
+}
+
+.UsedLifeline {
+    background:#9f9fa3 !important;
+    color: #FFF !important;
+}
+
+.UsedLifeline:hover {
+    background:#9f9fa3 !important;
+    color: #FFF !important;
+}
+
+.life-line-container {
+    margin-top:30px;
+}
+
+#PollLifeLineModal {
+    color: #333 !important;
 }
