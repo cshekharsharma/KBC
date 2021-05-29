@@ -219,6 +219,9 @@ function doForcefulNext(isForceIncorrect = false) {
     var contestEnded = window.localStorage.getItem("CONTESTENDED");
     var prevUserResponse = window.localStorage.getItem("LOCAL_PREVUSER_RES");
 
+    $("[opt-val]").css("pointer-events", "auto");
+    $("[opt-val").css("cursor", "pointer");
+
     if (contestEnded != null) {
         contestEnded = JSON.parse(contestEnded);
         if (contestEnded === true) {
@@ -277,6 +280,9 @@ function handleOptionClick(event, that) {
         pauseClockSound();
 
         window.localStorage.setItem("LOCAL_PREVUSER_RES", currChosenBlock);
+
+        $("[opt-val]").css("pointer-events", "none");
+        $("[opt-val").css("cursor", "not-allowed");
 
         enableBtn('next');
         disableBtn('walkaway');
