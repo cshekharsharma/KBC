@@ -5,7 +5,7 @@ This is a sample KBC (Kaun Banega Crorepati) app written in golang.
 The code quality is very rough, but it gets the work done! \m/
 
 
-## INSTALLATION ##
+## Installation ##
 
  - Create a MySQL database `kbc`, and import tables/data from SQL files of [Migration](./migration) folder.
  - Update appropriate credentials in [./internals/config/database.ini](./internals/config/database.ini) file.
