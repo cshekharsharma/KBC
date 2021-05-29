@@ -64,7 +64,7 @@ func (cs *ContestService) DeliveryNextQuestion(contestId int, answerJson string)
 	// if contest hasnt already started
 	if contest.Status == constants.CONTEST_STATUS_NOT_STARTED {
 		contest.Status = constants.CONTEST_STATUS_IN_PROGRESS
-		db.Table("contests").Save(&contest)
+		db.Exec("UPDATE contests SET status=? WHERE id=?", contest.Status, contest.Id)
 
 		level := constants.CONTEST_LEVEL_MIN
 		question := fetchNextQuestionToDeliver(level, contest.CategoryId)
