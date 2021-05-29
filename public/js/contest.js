@@ -274,6 +274,12 @@ function handleOptionClick(event, that) {
             $("[opt-val='" + currQuestion.CorrectOption + "']").css("background", "green");
             playIncorrectAnswer();
 
+            $('#next').html("SEE RESULTS");
+            setTimeout(function () {
+                window.onbeforeunload = function () { }
+                window.location.href = "/thanks";
+            }, 6000);
+
         }
 
         clearTimeout(TIMER_INSTANCE);
