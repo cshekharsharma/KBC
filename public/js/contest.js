@@ -263,6 +263,7 @@ function playIncorrectAnswer() {
 
 function playClockSound() {
     pauseClockSound();
+    $('#kbcClockPlay')[0].currentTime = 0;
     $('#kbcClockPlay')[0].play();
 }
 
@@ -272,7 +273,10 @@ function pauseClockSound() {
 
 function stopAllSounds() {
     var sounds = document.getElementsByTagName('audio');
-    for (i = 0; i < sounds.length; i++) sounds[i].pause();
+    for (i = 0; i < sounds.length; i++) {
+        sounds[i].pause();
+        sounds[i].currentTime = 0;
+    }
 
 }
 
@@ -319,6 +323,11 @@ function startCountdownTimer() {
         }
 
         $('.circle_animation').css('stroke-dashoffset', ((i + 1) * (initialOffset / time)));
+
+        if (i > 23) {
+            $('.circle_animation').css('stroke', "red");
+        }
+
         i++;
 
     }, 1000);
