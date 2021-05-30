@@ -2,7 +2,7 @@
     if ($('#startContest').length > 0) {
         $('#startContest').on("click", function (e) {
             e.preventDefault();
-            disableBtn('startContest');
+            disableBtn('#startContest');
 
             $('#startContest').html("STARTING CONTEST...");
             playContestStart();
@@ -11,8 +11,8 @@
                 type: 'POST',
                 url: "/contest/start",
                 data: {
-                    categoryId: $('#categoryId').val(),
-                    userId: 10
+                    categoryId: 0, //$('#categoryId').val(),
+                    fullName: $("#fullName").val()
                 }, beforeSend: function () {
                 },
                 complete: function (response) {
@@ -40,7 +40,7 @@
     var currQuesWorth = window.localStorage.getItem("CURRQUESWORTH");
 
     if (contestID > 0) {
-        disableBtn('next');
+        disableBtn('.next');
 
         if (nextQInfo === null) {
             playQuestionStart();
@@ -82,17 +82,17 @@
     }
 
     // HANDLE MANUAL NEXT QUESTION RELOAD
-    $("#next").on("click", function (e) {
+    $(".next").on("click", function (e) {
         doForcefulNext(false);
     });
 
     // HANDLE MANUAL NEXT QUESTION RELOAD
-    $("#walkaway").on("click", function (e) {
+    $(".walkaway").on("click", function (e) {
         doForcefulWalkAway();
     });
 
     // GO HOME
-    $('#goHome').on('click', function (e) {
+    $('.goHome').on('click', function (e) {
         window.location.href = "/";
     });
 
@@ -107,12 +107,12 @@
 
     if (FFLifeLineStatus == "taken") {
         $('#fifty-fifty-lifeline').addClass("UsedLifeline");
-        disableBtn('fifty-fifty-lifeline');
+        disableBtn('#fifty-fifty-lifeline');
     }
 
     if (PollLifeLineStatus == "taken") {
         $('#audience-poll-lifeline').addClass("UsedLifeline");
-        disableBtn('audience-poll-lifeline');
+        disableBtn('#audience-poll-lifeline');
     }
 
     // Handling lifelines 
@@ -125,7 +125,7 @@
             window.localStorage.setItem("FFLifeLineStatus", "taken");
 
             $('#fifty-fifty-lifeline').addClass("UsedLifeline");
-            disableBtn('fifty-fifty-lifeline');
+            disableBtn('#fifty-fifty-lifeline');
         }
     });
 
@@ -139,9 +139,13 @@
             window.localStorage.setItem("PollLifeLineStatus", "taken");
 
             $('#audience-poll-lifeline').addClass("UsedLifeline");
-            disableBtn('audience-poll-lifeline');
+            disableBtn('#audience-poll-lifeline');
         }
     });
+
+    $('#level-listing-toggle-switch').on('click', function () {
+        $('#kbc-level-listing').toggle();
+    })
 
 }(window.jQuery, window, document));
 
@@ -197,8 +201,8 @@ function getNextQuestion(contestID, answerObject) {
 
                 $('.option-block').removeAttr("style");
 
-                enableBtn('walkaway');
-                disableBtn('next');
+                enableBtn('.walkaway');
+                disableBtn('.next');
             } else {
                 window.localStorage.setItem("CONTESTINFO", JSON.stringify(response.Contest));
                 window.localStorage.setItem("CONTESTENDED", JSON.stringify(response.ContestEnded));
@@ -274,7 +278,7 @@ function handleOptionClick(event, that) {
             $("[opt-val='" + currQuestion.CorrectOption + "']").css("background", "green");
             playIncorrectAnswer();
 
-            $('#next').html("SEE RESULTS");
+            $('.next').html("SEE RESULTS");
             setTimeout(function () {
                 window.onbeforeunload = function () { }
                 window.location.href = "/thanks";
@@ -290,8 +294,8 @@ function handleOptionClick(event, that) {
         $("[opt-val]").css("pointer-events", "none");
         $("[opt-val").css("cursor", "not-allowed");
 
-        enableBtn('next');
-        disableBtn('walkaway');
+        enableBtn('.next');
+        disableBtn('.walkaway');
     }
 }
 
@@ -338,14 +342,14 @@ function stopAllSounds() {
     }
 }
 
-function disableBtn(id) {
-    $('#' + id).prop("disabled", true);
-    $('#' + id).css("cursor", "not-allowed");
+function disableBtn(selector) {
+    $(selector).prop("disabled", true);
+    $(selector).css("cursor", "not-allowed");
 }
 
 function enableBtn(id) {
-    $('#' + id).prop("disabled", false);
-    $('#' + id).css("cursor", "pointer");
+    $(selector).prop("disabled", false);
+    $(selector).css("cursor", "pointer");
 }
 
 var TIMER_INSTANCE;
@@ -353,7 +357,7 @@ var TIMER_INSTANCE;
 function startCountdownTimer() {
     clearInterval(TIMER_INSTANCE);
 
-    var time = 30;
+    var time = 999;
     var initialOffset = '440';
     var i = 1
 
@@ -369,8 +373,8 @@ function startCountdownTimer() {
 
             clearInterval(TIMER_INSTANCE);
 
-            disableBtn('next');
-            disableBtn('walkaway');
+            disableBtn('.next');
+            disableBtn('.walkaway');
 
             setTimeout(function () {
                 pauseClockSound();
@@ -382,7 +386,7 @@ function startCountdownTimer() {
 
         $('.circle_animation').css('stroke-dashoffset', ((i + 1) * (initialOffset / time)));
 
-        if (i > 23) {
+        if (i > (time * 0.75)) {
             $('.circle_animation').css('stroke', "red");
         }
 

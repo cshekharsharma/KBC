@@ -39,7 +39,7 @@ func (cs *ContestService) StartContest(userId int, categoryId int) int {
 	return newContest.Id
 }
 
-func (cs *ContestService) DeliveryNextQuestion(contestId int, answerJson string) interface{} {
+func (cs *ContestService) DeliverNextQuestion(contestId int, answerJson string) interface{} {
 	db := helpers.GetDbConnection()
 
 	contest := new(models.Contest)

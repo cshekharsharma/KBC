@@ -2,10 +2,11 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/cshekharsharma/KBC/internals/models/apiresponse"
-	"github.com/cshekharsharma/KBC/internals/services"
 	"net/http"
 	"strconv"
+
+	"github.com/cshekharsharma/KBC/internals/models/apiresponse"
+	"github.com/cshekharsharma/KBC/internals/services"
 )
 
 func StartContest(w http.ResponseWriter, r *http.Request) {
@@ -15,9 +16,10 @@ func StartContest(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(error)
 	}
 
-	userId, _ := strconv.Atoi(r.Form.Get("userId"))
+	fullName := r.Form.Get("fullName")
 	categoryId, _ := strconv.Atoi(r.Form.Get("categoryId"))
 
+	userId := (&services.UserService{}).CreateUser(fullName)
 	contestId := (&services.ContestService{}).StartContest(userId, categoryId)
 
 	type data struct {
@@ -39,7 +41,7 @@ func DeliverNextQuestion(w http.ResponseWriter, r *http.Request) {
 	contestId, _ := strconv.Atoi(r.Form.Get("contestId"))
 	answerObj := r.Form.Get("answerObject")
 
-	resp := (&services.ContestService{}).DeliveryNextQuestion(contestId, answerObj)
+	resp := (&services.ContestService{}).DeliverNextQuestion(contestId, answerObj)
 
 	response := new(apiresponse.Response)
 

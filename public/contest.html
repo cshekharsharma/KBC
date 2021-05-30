@@ -46,14 +46,16 @@
 
 <body class="text-center">
 
-    <button id="goHome" class="btn btn-danger" style="color:#FFF;position:absolute;bottom:20px;left:20px;z-index:1000">
-        <b>&#171; &nbsp;ABORT CONTEST</b></button>
+    <div class="abs-btns">
+        <button class="goHome btn btn-danger" style="position:absolute;bottom:20px;left:20px;z-index:1000">
+            <b>&#171; &nbsp;ABORT CONTEST</b></button>
 
-    <button id="next" class="btn btn-warning" style="position:absolute;bottom:80px;right:20px;z-index:1000">
-        <b>NEXT LEVEL &nbsp; &#10148;</b></button>
+        <button class="next btn btn-warning" style="position:absolute;bottom:80px;right:20px;z-index:1000">
+            <b>NEXT LEVEL &nbsp; &#10148;</b></button>
 
-    <button id="walkaway" class="btn btn-danger" style="position:absolute;bottom:20px;right:20px;z-index:1000">
-        <b>QUIT GAME &#10148;</b></button>
+        <button class="walkaway btn btn-danger" style="position:absolute;bottom:20px;right:20px;z-index:1000">
+            <b>QUIT GAME &#10148;</b></button>
+    </div>
 
     <div class="row upper-main-container">
         <div class="col-sm-3 left-sidebar">
@@ -90,6 +92,7 @@
             </div>
         </div>
         <div class="col-sm-3 right-sidebar">
+            <button id="level-listing-toggle-switch" class="btn btn-dark">&#9776;</button>
             <div id="kbc-level-listing">
                 <table>
                     <tr class="rsl-tr" id="rsl-tr-15">
@@ -177,6 +180,16 @@
                         id="optionC"></span></div>
                 <div class="col-sm-6 option-block option-block-2" opt-val="4"><span class="tx float-left">D.</span><span
                         id="optionD"></span></div>
+            </div>
+            <div class="abs-btns-mobile">
+                <button class="goHome btn btn-danger">
+                    <b>ABORT</b></button>
+
+                <button class="next btn btn-warning">
+                    <b>NEXT</b></button>
+
+                <button class="walkaway btn btn-danger">
+                    <b>QUIT</b></button>
             </div>
         </div>
     </div>

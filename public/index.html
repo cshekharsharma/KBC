@@ -58,23 +58,24 @@
         <div class="col-sm-3 right-sidebar"></div>
 
     </div>
-    <div class="row lower-main-container">
-        <div class="col-sm-6 offset-sm-3">
+    <div class="row lower-main-container d-flex justify-content-center mt-5">
+        <div class="col-sm-8">
             <form class="contest-start-form">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <select id="categoryId" class="form-control" required>
+                <div class="row d-flex justify-content-center">
+                    <div class="form-group col-lg-4 col-sm-6" style="width:100%">
+                        <select id="categoryId" class="form-control" required style="display:none">
                             <option value="">Choose Contest Type</option>
                             <option value="0">General</option>
                         </select>
+                        <input type="text" placeholder="Enter your full name" name="fullName" id="fullName"
+                            class="form-control">
                     </div>
-                    <div class="col-sm-6" style="width:100%">
+                    <div class="form-group col-lg-4 col-sm-6" style="width:100%">
                         <button type="submit" id="startContest" class="form-control btn btn-warning btn-lg">START KBC
                             CONTEST</button>
                     </div>
 
                 </div>
-
             </form>
         </div>
     </div>

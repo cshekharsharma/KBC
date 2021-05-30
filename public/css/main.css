@@ -19,8 +19,8 @@ body {
 
 .cover {
   margin:auto;
-  max-width: 15em;
-  max-height:15em;
+  max-width: 14em;
+  max-height:14em;
   padding: 0rem;
   background-color: #FFF;
   border-radius: 50% !important;
@@ -43,9 +43,9 @@ body {
     background: rgb(2,0,36);
     background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(23,76,130,1) 100%);
     padding:10px 15px;
-    font-size:26px;
+    font-size:24px;
     font-weight:bold;
-    margin-top:20px;
+    margin-top:10px;
     margin-left:10px;
     margin-right:10px;
     margin-bottom:40px;
@@ -63,7 +63,7 @@ body {
     background: rgb(2,0,36);
     background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(23,76,130,1) 100%);
     padding:4px 10px;
-    font-size:24px;
+    font-size:22px;
     font-weight:bold;
     cursor: pointer !important;
 }
@@ -74,20 +74,15 @@ body {
 }
 
 .left-sidebar-internal { 
-    margin-top: 80px;
-    font-weight: bold;
-   
-}
-
-.left-sidebar-internal { 
+   font-weight: bold;
    border-radius: 24px;
    text-align:center;
    border: 2px solid silver;
-   padding:15px;
+   padding:12px;
    margin-top:40px;
    color: #FFF !important;
+   font-size:22px;
    background: rgb(2,0,36);
-   font-size:24px;
    background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(23,76,130,1) 100%);
 }
 
@@ -95,7 +90,12 @@ body {
     text-align:right;
 }
 
+#level-listing-toggle-switch {
+    display: none;
+}
+
 #kbc-level-listing {
+    display: block;
     margin-top: 20px;
     width:80%;
     float:right;
@@ -103,6 +103,7 @@ body {
     background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(23,8,33,1) 31%);
     border-radius: 16px;
     border:1px solid #ffc107;
+    font-size: 15px;
 }
 
 #kbc-level-listing table {
@@ -128,20 +129,21 @@ body {
     font-weight:bold;
 }
 
-#next {
-    color: #000 !important;
+.next {
     font-weight:bold;
 }
 
 .thanks-lower-main-container {
-    font-size: 28px;
     background: rgb(2,0,36);
     background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(23,76,130,1) 100%);
     border: 1px solid #999;
-    padding:15px;
-    margin-top:10px;
-    margin-left:100px;
-    margin-right:100px;
+    padding:10px;
+    margin-top:15px;
+    
+}
+
+.thanks-lower-main-container #Line1 {
+    font-size: 28px;
 }
 
 .thanks-lower-main-container #Line2 {
@@ -153,10 +155,8 @@ body {
     font-size: 24px;
 }
 
-.thanks-go-home {
-    position: absolute;
-    right: 10px;
-    bottom:10px;
+#thanks-go-home {
+    margin-top:20px;
 }
 
 /* COUNTDOWN TIMER */
@@ -224,4 +224,123 @@ svg {
 
 #PollLifeLineModal {
     color: #333 !important;
+}
+
+.abs-btns-mobile {
+    display: none;
+}
+
+.abs-btns {
+    display: block;
+}
+
+/* RESPONSIVE DESIGN RULES */
+
+@media only screen and (max-width: 600px) {
+    .thanks-lower-main-container #Line1 {
+        font-size: 18px;
+      }
+    
+    .thanks-lower-main-container #Line2 {
+      font-size: 20px;
+    }
+
+    .thanks-lower-main-container #Line3 {
+        font-size: 16px;
+    }
+
+    .question-stmt-area {
+        border-radius:16px;
+        border:1px solid #999;
+        padding:10px 15px;
+        font-size:16px;
+        font-weight:bold;
+        margin-top:10px;
+        margin-left:6px;
+        margin-right:6px;
+        margin-bottom:20px;
+    }
+    
+    .option-block {
+        margin-top:12px;
+        border-radius:16px;
+        border:1px solid #999;;
+        padding:4px 6px;
+        font-size:14px;
+        font-weight:bold;
+        cursor: pointer !important;
+    }
+
+    .left-sidebar-internal { 
+        border-radius: 14px;
+        text-align:center;
+        border: 1px solid silver;
+        padding:6px;
+        margin-top:15px;
+        color: #FFF !important;
+        font-size:16px;
+     }
+      
+     .item h2 {
+        text-align:center;
+        position: absolute;
+        line-height: 25px;
+        font-size:20px;
+        width: auto;
+        padding:8px;
+        font-weight: bold;
+        border:3px solid #ffc107;
+        border-radius: 50%;
+    }
+
+    .item svg {
+        display: none;
+    }
+
+    .cover {
+        max-width: 9em;
+        max-height: 9em;
+        border:1px solid #FFF;
+    }
+
+    .lifeline {
+        background: #0F0522;
+        color: #FFF;
+        border:2px solid #999;
+        height:30px;
+        width:60px;
+        padding:3px;
+        font-family:verdana;
+        font-weight:bold;
+        border-radius:28px;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 14px;
+    }
+
+    .life-line-container {
+        margin-top:5px;
+    }
+
+    #level-listing-toggle-switch {
+        display: block;
+        border:1px solid silver;
+    }
+
+    #kbc-level-listing {
+        display: none;
+    }
+
+    .walkaway, .next, .goHome {
+        font-size: 14px !important;
+    }
+
+    .abs-btns-mobile {
+        display: block;
+        margin-top:20px !important;
+    }
+
+    .abs-btns {
+        display: none;
+    }
 }

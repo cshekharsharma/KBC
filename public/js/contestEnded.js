@@ -26,12 +26,12 @@
 
     if (finalQStatus == 'walkaway') {
         m1 = "Thank you for playing KBC contest!";
-        m3 = "The contest ended as you choose to quit at level " + finalLevel + ". &#128530;";
+        m3 = "The contest ended as you choose to quit at level #" + finalLevel + ". &#128530;";
     }
 
     if (finalQStatus == "incorrect") {
         m1 = "Thank you for playing KBC contest!";
-        m3 = "The contest ended as you incorrectly answered the question at level " + finalLevel + ". &#128530;";
+        m3 = "The contest ended as you incorrectly answered the question at level #" + finalLevel + ". &#128530;";
     }
 
     if (finalQStatus == "correct" && currQuesWorthInt == 10000000) {
