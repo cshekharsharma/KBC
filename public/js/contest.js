@@ -1,6 +1,6 @@
 (function ($, window, document) {
     if ($('#startContest').length > 0) {
-        $('#startContest').on("click", function (e) {
+        $('.contest-start-form').on("submit", function (e) {
             e.preventDefault();
             disableBtn('#startContest');
 
