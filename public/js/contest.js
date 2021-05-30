@@ -91,12 +91,6 @@
         doForcefulWalkAway();
     });
 
-    // GO HOME
-    $('.goHome').on('click', function (e) {
-        window.location.href = "/";
-    });
-
-
     // Handling option clicks for answer purpose
     $(".option-block").on("click", function (e) {
         handleOptionClick(e, $(this));
@@ -347,7 +341,7 @@ function disableBtn(selector) {
     $(selector).css("cursor", "not-allowed");
 }
 
-function enableBtn(id) {
+function enableBtn(selector) {
     $(selector).prop("disabled", false);
     $(selector).css("cursor", "pointer");
 }
@@ -357,7 +351,7 @@ var TIMER_INSTANCE;
 function startCountdownTimer() {
     clearInterval(TIMER_INSTANCE);
 
-    var time = 999;
+    var time = 30;
     var initialOffset = '440';
     var i = 1
 

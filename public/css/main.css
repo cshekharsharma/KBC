@@ -331,7 +331,7 @@ svg {
         display: none;
     }
 
-    .walkaway, .next, .goHome {
+    .walkaway, .next {
         font-size: 14px !important;
     }
 
