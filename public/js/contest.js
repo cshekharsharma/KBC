@@ -98,6 +98,7 @@
 
     var FFLifeLineStatus = window.localStorage.getItem("FFLifeLineStatus");
     var PollLifeLineStatus = window.localStorage.getItem("PollLifeLineStatus");
+    var QuesSwitchLifeLineStatus = window.localStorage.getItem("QuesSwitchLifeLineStatus");
 
     if (FFLifeLineStatus == "taken") {
         $('#fifty-fifty-lifeline').addClass("UsedLifeline");
@@ -107,6 +108,11 @@
     if (PollLifeLineStatus == "taken") {
         $('#audience-poll-lifeline').addClass("UsedLifeline");
         disableBtn('#audience-poll-lifeline');
+    }
+
+    if (QuesSwitchLifeLineStatus == "taken") {
+        $('#ques-switch-poll-lifeline').addClass("UsedLifeline");
+        disableBtn('#ques-switch-poll-lifeline');
     }
 
     // Handling lifelines 
@@ -137,6 +143,20 @@
         }
     });
 
+    $('#ques-switch-poll-lifeline').on('click', function (e) {
+        var QSLifeLineStatus = window.localStorage.getItem("QuesSwitchLifeLineStatus");
+
+        if (QSLifeLineStatus != "taken") {
+
+            triggerQSLifeLine();
+
+            window.localStorage.setItem("QuesSwitchLifeLineStatus", "taken");
+
+            $('#ques-switch-poll-lifeline').addClass("UsedLifeline");
+            disableBtn('#ques-switch-poll-lifeline');
+        }
+    });
+
     $('#level-listing-toggle-switch').on('click', function () {
         $('#kbc-level-listing').toggle();
     })
@@ -144,6 +164,8 @@
 }(window.jQuery, window, document));
 
 function getNextQuestion(contestID, answerObject) {
+    clearTimeout(TIMER_INSTANCE);
+
     $.ajax({
         type: 'POST',
         url: "/contest/deliverNextQuestion",
@@ -151,8 +173,10 @@ function getNextQuestion(contestID, answerObject) {
             contestId: contestID,
             answerObject: JSON.stringify(answerObject)
         }, beforeSend: function () {
+            $('.loader').show();
         },
         complete: function (response) {
+            $('.loader').hide();
         },
         success: function (response) {
             response = JSON.parse(response)
@@ -465,4 +489,71 @@ function triggerPollLifeLine() {
         pauseClockSound();
         playLifelineSound();
     }
+}
+
+function triggerQSLifeLine() {
+    let currentQ = localStorage.getItem("NEXTQUESTION");
+    var contestID = window.localStorage.getItem("kbcContestID");
+
+    if (currentQ) {
+        currentQ = JSON.parse(currentQ);
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: "/contest/switchQuestion",
+        data: {
+            contestId: contestID,
+            currQId: currentQ.Id,
+            currLevel: currentQ.ContestLevel
+        },
+        beforeSend: function (e) {
+            $('.loader').show();
+        },
+        complete: function (e) {
+            $('.loader').hide();
+        },
+        success: function (response) {
+            response = JSON.parse(response)
+            response = response.data;
+
+            window.localStorage.setItem("NEXTQUESTION", JSON.stringify(response.Question));
+
+            // question to be delivered
+            $("#questionStatement").html(response.Question.QuestionStatement);
+            $("#optionA").html(response.Question.OptionA);
+            $("#optionB").html(response.Question.OptionB);
+            $("#optionC").html(response.Question.OptionC);
+            $("#optionD").html(response.Question.OptionD);
+
+            $('.rsl-tr').removeClass("active-tr");
+            $('#rsl-tr-' + parseInt(response.Question.ContestLevel)).addClass("active-tr");
+
+            $('.item').hide();
+            playQuestionStart();
+
+            if (response.Question.ContestLevel < 6) {
+                setTimeout(function () {
+                    $('.item').show();
+                    playClockSound();
+                    startCountdownTimer();
+                }, 5000);
+
+            } else {
+                $('.item').hide();
+            }
+
+            $('.option-block').removeAttr("style");
+
+            enableBtn('.walkaway');
+            disableBtn('.next');
+        },
+        error: function (response) {
+
+        }
+    });
+
+    clearTimeout(TIMER_INSTANCE);
+    pauseClockSound();
+    playLifelineSound();
 }

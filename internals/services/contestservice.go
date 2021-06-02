@@ -130,11 +130,34 @@ func (cs *ContestService) DeliverNextQuestion(contestId int, answerJson string) 
 		return apiResObj
 
 	}
+}
+
+func (cs *ContestService) SwitchQuestion(contestId int, questionId int, quesLevel int) interface{} {
+	db := helpers.GetDbConnection()
+
+	newQuestion := new(models.Question)
+
+	db.Raw("SELECT * FROM questions WHERE contestLevel=? AND id != ? AND isDeleted=0",
+		quesLevel, questionId).Find(&newQuestion)
+
+	// updating existing mapping
+	db.Exec("UPDATE contest_question_mapping SET questionId=? "+
+		"WHERE questionId=? AND contestId=? AND isDeleted=0", newQuestion.Id, questionId, contestId)
 
 	handle, _ := db.DB()
 	handle.Close()
 
-	return nil
+	type apiRes struct {
+		Question interface{}
+		Level    int
+	}
+
+	apiResObj := new(apiRes)
+
+	apiResObj.Level = newQuestion.ContestLevel
+	apiResObj.Question = newQuestion
+
+	return apiResObj
 }
 
 func concludeIfContestEnded(contest *models.Contest, answerObject *components.AnswerObject, mapping *models.ContestQuestionMapping) (bool, bool) {
@@ -150,7 +173,7 @@ func concludeIfContestEnded(contest *models.Contest, answerObject *components.An
 
 	if answerObject.IsWalkAway {
 		db.Exec("UPDATE contest_question_mapping SET isSubmitted=1, isCorrect=0, isWalkAway=1 "+
-			"WHERE id=?", mapping.Id)
+			"WHERE id=? AND isDeleted=0", mapping.Id)
 
 		finalPrizeMoney := levelRow.WalkAwayMoney
 		db.Exec("UPDATE contests SET status=?, finalPrizeMoney=?, "+
@@ -167,7 +190,7 @@ func concludeIfContestEnded(contest *models.Contest, answerObject *components.An
 
 	if question.CorrectOption != answerObject.AnswerKey {
 		db.Exec("UPDATE contest_question_mapping SET isSubmitted=1, isCorrect=0, isWalkAway=0 "+
-			"WHERE id=?", mapping.Id)
+			"WHERE id=? AND isDeleted=0", mapping.Id)
 
 		finalPrizeMoney := levelRow.IncorrectAnswerMoney
 		db.Exec("UPDATE contests SET status=?, finalPrizeMoney=?, "+
@@ -185,7 +208,7 @@ func concludeIfContestEnded(contest *models.Contest, answerObject *components.An
 	if question.CorrectOption == answerObject.AnswerKey {
 
 		db.Exec("UPDATE contest_question_mapping SET isSubmitted=1, isCorrect=1, isWalkAway=0 "+
-			"WHERE id=?", mapping.Id)
+			"WHERE id=? AND isDeleted=0", mapping.Id)
 
 		if question.ContestLevel == mapping.ContestLevelId &&
 			mapping.ContestLevelId == constants.CONTEST_LEVEL_MAX {
@@ -223,7 +246,7 @@ func fetchNextQuestionToDeliver(level int, categoryId int) *models.Question {
 		categoryClause = fmt.Sprintf(" AND questionCategory = %d ", categoryId)
 	}
 
-	sqlQuery := fmt.Sprintf("SELECT * FROM questions WHERE contestLevel = %d "+
+	sqlQuery := fmt.Sprintf("SELECT * FROM questions WHERE isDeleted=0 AND contestLevel = %d "+
 		"%s ORDER BY RAND() LIMIT 1", level, categoryClause)
 
 	db.Raw(sqlQuery).Scan(&question)

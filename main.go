@@ -24,6 +24,7 @@ func main() {
 	r.HandleFunc("/contest", controllers.ContestPage)
 	r.HandleFunc("/thanks", controllers.ThanksPage)
 	r.HandleFunc("/contest/start", controllers.StartContest)
+	r.HandleFunc("/contest/switchQuestion", controllers.SwitchQuestion)
 	r.HandleFunc("/contest/deliverNextQuestion", controllers.DeliverNextQuestion)
 
 	// Bind to a port and pass our router in

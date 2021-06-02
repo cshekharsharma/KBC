@@ -11,9 +11,7 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css"
-        integrity="sha384-wESLQ85D6gbsF459vf1CiZ2+rr+CsxRY0RpiF1tLlQpDnAgg6rwdsUF1+Ics2bni" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
     <link href="./public/css/bootstrap.min.css" rel="stylesheet"
@@ -71,12 +69,16 @@
 
         <div class="col-sm-6 center-viewport">
             <div class="life-line-container">
-                <div id="fifty-fifty-lifeline" class="lifeline">
+                <div id="fifty-fifty-lifeline" class="lifeline" title="Take 50:50 Lifeline">
                     50:50
                 </div>
                 &nbsp;&nbsp;
-                <div id="audience-poll-lifeline" class="lifeline">
-                    &#128202;
+                <div id="audience-poll-lifeline" class="lifeline" title="Take Audience Poll Lifeline">
+                    <i class="fa fa-bar-chart"></i>
+                </div>
+                &nbsp;&nbsp;
+                <div id="ques-switch-poll-lifeline" class="lifeline" title="Take Switch Question Lifeline">
+                    <i class="fa fa-refresh"></i>
                 </div>
             </div>
 
@@ -185,7 +187,7 @@
                 <button class="walkaway btn btn-danger">
                     <b>QUIT</b></button>
 
-                    <br><br>
+                <br><br>
             </div>
         </div>
     </div>
@@ -232,7 +234,9 @@
             </div>
         </div>
     </div>
-
+    <div class="loader">
+        <i class="center-loader fa fa-refresh fa-spin"></i>
+    </div>
 </body>
 
 </html>

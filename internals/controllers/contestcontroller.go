@@ -46,5 +46,21 @@ func DeliverNextQuestion(w http.ResponseWriter, r *http.Request) {
 	response := new(apiresponse.Response)
 
 	fmt.Fprintf(w, "%s", response.Create("success", 200, resp, "OK"))
+}
 
+func SwitchQuestion(w http.ResponseWriter, r *http.Request) {
+	error := r.ParseForm()
+	if error != nil {
+		// throw some error
+	}
+
+	contestId, _ := strconv.Atoi(r.Form.Get("contestId"))
+	qId, _ := strconv.Atoi(r.Form.Get("currQId"))
+	qLevel, _ := strconv.Atoi(r.Form.Get("currLevel"))
+
+	resp := (&services.ContestService{}).SwitchQuestion(contestId, qId, qLevel)
+
+	response := new(apiresponse.Response)
+
+	fmt.Fprintf(w, "%s", response.Create("success", 200, resp, "OK"))
 }
