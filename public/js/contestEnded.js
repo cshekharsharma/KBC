@@ -21,7 +21,7 @@
     var html = '';
 
     var m1 = "Thank you for playing KBC contest!";
-    var m2 = "Your Total Prize Money: <span class='prizemoney'>&#8377; " + totalPrizeMoney + "</span>";
+    var m2 = "Your total prize money is <span class='prizemoney'>&#8377; " + totalPrizeMoney + "</span>";
     var m3 = "";
 
     if (finalQStatus == 'walkaway') {

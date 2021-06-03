@@ -43,7 +43,6 @@
         disableBtn('.next');
 
         if (nextQInfo === null) {
-            playQuestionStart();
 
             iS_FIRST_QUESTON = true;
             lastQDelivered = -1;
@@ -176,7 +175,6 @@ function getNextQuestion(contestID, answerObject) {
             $('.loader').show();
         },
         complete: function (response) {
-            $('.loader').hide();
         },
         success: function (response) {
             response = JSON.parse(response)
@@ -206,6 +204,8 @@ function getNextQuestion(contestID, answerObject) {
                 $('.item').hide();
                 playQuestionStart();
 
+                $('.loader').hide();
+
                 if (response.NextQuestion.ContestLevel < 6) {
                     setTimeout(function () {
                         $('.item').show();
@@ -230,6 +230,7 @@ function getNextQuestion(contestID, answerObject) {
             }
         },
         error: function (data) {
+            $('.loader').hide();
             alert("Something went wrong, Please try again later");
         }
     });
