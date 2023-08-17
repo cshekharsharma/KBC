@@ -28,6 +28,6 @@ func main() {
 	r.HandleFunc("/contest/deliverNextQuestion", controllers.DeliverNextQuestion)
 
 	// Bind to a port and pass our router in
-	fmt.Println("Server started successfully at http://localhost:80")
-	log.Fatal(http.ListenAndServe(":80", r))
+	fmt.Println("Server started successfully at http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
