@@ -8,7 +8,7 @@ import (
 )
 
 func GetDbConnection() *gorm.DB {
-	config, err := ini.Load("./internals/config/database.ini")
+	config, err := ini.Load("./config/database.ini")
 
 	if err != nil {
 		return nil
